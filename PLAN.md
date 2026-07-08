@@ -66,7 +66,7 @@ value-add available for this app.
 
 ## Phased delivery
 
-### Phase A — Green APK (scope of this pass)  ✅ built, ⏳ needs on-device test
+### Phase A — Green APK  ✅ complete
 - [x] Project scaffold: Gradle (KTS), AGP 8.6.1 / Kotlin 2.0.20, wrapper committed.
 - [x] `MainActivity` WebView shell + WebViewAssetLoader.
 - [x] Manifest: launcher activity, no INTERNET, rotation-safe configChanges,
@@ -74,23 +74,37 @@ value-add available for this app.
 - [x] Offline asset bundling (`noCompress` html/js/json), chassis-coloured
       background (no white flash), adaptive icon.
 - [x] CI workflow → `assembleDebug` → uploads `bighart-debug-apk` artifact.
-- [ ] **First CI run is green** (verify in Actions tab).
-- [ ] **On-device smoke test**: install the artifact, confirm audio, touch
-      keyboard/pads, knobs, tape delay/reverb, preset save+reload (persistence),
-      rotation keeps audio alive, no white flash, insets correct on a notch device.
+- [x] **First CI run confirmed green** — run `28971582382`, commit `ad56913`,
+      `bighart-debug-apk` artifact produced (2.99 MB), verified via the
+      GitHub API (not just the workflow badge).
+- [x] **Installed on-device** (Motorola Edge 60 Fusion) — confirmed by the
+      developer. Full smoke-test checklist (all knobs/pads, tape delay,
+      reverb, preset save/reload, rotation, notch insets) — confirm each item
+      explicitly in PROGRESS.md as it's run, since "it installed and opened"
+      and "every control works" are different claims.
 
 ### Phase B — Signing & release
-- [ ] Generate an upload keystore (`keytool`, e.g. via Termux). Record alias +
-      passwords in a password manager. **Back up the keystore** — losing it means
-      you can never update the listing.
-- [ ] Add repo **secrets**: `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`,
-      `KEY_ALIAS`, `KEY_PASSWORD`.
-- [ ] Add a `signingConfigs { release { ... } }` block reading those (via
-      `keystore.properties` locally / env on CI) and wire `buildTypes.release`.
-- [ ] Add a tag-triggered CI job (`push: tags: v*`) → decode keystore →
-      `assembleRelease` → attach signed APK to a GitHub Release.
+- [x] Env-var-driven `signingConfigs { create("release") }` added to
+      `app/build.gradle.kts` — falls back to unsigned when the four
+      `RELEASE_*` variables aren't present, so nothing else broke.
+- [x] Tag-triggered CI workflow (`.github/workflows/release.yml`) — decodes
+      the keystore secret in-memory, runs `assembleRelease :bundleRelease`,
+      checksums the outputs, deletes the decoded keystore unconditionally,
+      attaches signed APK + AAB to a GitHub Release on any `v*` tag push.
+- [ ] **Keystore generation + GitHub secrets — see RELEASE.md.** This step is
+      deliberately left to the developer, run from Termux with `gh` CLI, so
+      the private key and password never pass through a chat transcript or
+      an agent's sandbox.
+- [ ] Cut `v1.0.0` tag once secrets exist → verify the Release workflow run.
+- [ ] `apksigner verify` + SHA-256 checksums on the produced artifacts.
+- [ ] On-device smoke test of the *signed* build specifically (a
+      debug-installed APK and a release-signed APK usually can't upgrade each
+      other in place — uninstall the debug build first if testing side by side).
 - [ ] Gumroad listing (mirror the Resonant Systems store; Bighart price point
       per existing pricing: Bighart $12).
+- [ ] Google Play: internal testing track first (not production), privacy
+      policy required before listing, note the 12-tester/14-day closed-test
+      gate if this is a new Play developer account.
 
 ### Phase C — Optional native enhancements
 - [ ] **Native MIDI bridge** (the headline feature): use `android.media.midi`

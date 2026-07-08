@@ -8,7 +8,7 @@ as an offline asset.
 
 ## Status
 
-**Phase A (scaffold) complete. Not yet verified on-device.**
+**Phase A complete and verified. Phase B (signing) in progress.**
 
 | | |
 |---|---|
@@ -16,12 +16,14 @@ as an offline asset.
 | minSdk / targetSdk / compileSdk | 26 / 35 / 35 |
 | versionCode / versionName | 1 / `1.0` |
 | Build | AGP 8.6.1 · Kotlin 2.0.20 · Gradle 8.10.2 |
-| CI | GitHub Actions → `:app:assembleDebug` → `bighart-debug-apk` artifact on every push to `main` |
-| Signing | **Not configured** — CI produces a debug APK only. See PLAN.md Phase B. |
-| On-device install/test | **Not yet confirmed.** An earlier upload attempt landed the project with a flattened file structure (all files at repo root, no `.github/workflows/`), which meant CI never ran and no APK was ever built or installed from this repo. This commit corrects the structure. Next step is a real CI run + install. |
+| Debug CI | ✅ Green — [run 28971582382](https://github.com/renardoberou/Bighart-synth-standalone/actions/runs/28971582382), commit `ad56913`, `bighart-debug-apk` artifact produced (2.99 MB), verified via the GitHub API. |
+| Release CI | Added (`.github/workflows/release.yml`, tag-triggered on `v*`) but not yet run — needs the four signing secrets first. See RELEASE.md. |
+| Signing | Env-var-driven signing config added to `app/build.gradle.kts`. Keystore not yet generated — that step is intentionally left to the developer (see RELEASE.md), not automated by an agent, so the private key never passes through a chat transcript. |
+| On-device install | ✅ Confirmed installed and launching (Motorola Edge 60 Fusion). Full control-by-control smoke test (tape delay, reverb, all knobs/pads, preset save/reload, rotation, notch insets) — see PROGRESS.md for exactly which items have been explicitly confirmed vs. still open. |
 | Known limitation | Android WebView does not implement Web MIDI, so the synth's in-app MIDI LEARN panel loads but external MIDI controllers will not connect. Touch play is fully functional. A native MIDI bridge is scoped as Phase C. |
+| Internet permission | Not present — the app is fully offline. (Confirm this remains accurate if any feature is later added that needs network.) |
 
-See **PROGRESS.md** for the live log and **PLAN.md** for the full architecture and phased roadmap.
+See **PROGRESS.md** for the live log, **PLAN.md** for the full architecture and phased roadmap, and **RELEASE.md** for the signing/secrets steps.
 
 ## Build
 
@@ -50,12 +52,11 @@ PROGRESS.md                             — live status log for handoff between 
 
 ## Release readiness
 
-Not release-ready. Before any public release:
-1. First green CI run on this corrected structure (unverified as of this commit).
-2. On-device install + smoke test (audio, all knobs/pads, tape delay, reverb,
-   preset save/reload via localStorage, rotation, insets on a notched device).
-3. Phase B: generate an upload keystore, add signing config + CI secrets,
-   produce a signed release build.
+Not release-ready yet. Remaining before any public release:
+1. Generate the release keystore + load the four GitHub secrets (RELEASE.md) — developer step, not automated.
+2. Cut `v1.0.0`, confirm `.github/workflows/release.yml` produces a signed, checksummed APK + AAB.
+3. `apksigner verify` the output; on-device smoke test of the *signed* build specifically.
+4. Only then: Gumroad listing / Google Play internal testing track.
 
 No keystore, signing credentials, `.env` file, APK/AAB, or Play Console data is
 stored in this repository — see `.gitignore`.

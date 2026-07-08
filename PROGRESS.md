@@ -19,6 +19,41 @@ Live status log. **Append an entry whenever you finish a step.** Newest first.
 
 ## Log
 
+### 2026-07-08 (later) — CI verified green; Phase B signing scaffolding added
+- **CI verified, not just assumed:** pushed the corrected tree (commit
+  `ad56913`) via a fine-grained PAT scoped to this repo only (Contents +
+  Workflows: read/write). Confirmed via GitHub API, not just push output:
+  HEAD sha matches, tree structure matches, workflow run `28971582382`
+  completed with `conclusion: success`, and the `bighart-debug-apk` artifact
+  exists at 2,990,298 bytes and is not expired.
+- Developer confirmed the app is installed and launching on-device (Motorola
+  Edge 60 Fusion). Noting explicitly: "installed and launches" is confirmed;
+  a full control-by-control smoke test (every knob/pad, tape delay, reverb,
+  preset save/reload persistence, rotation, notch insets) has **not** been
+  itemized yet — add specific confirmations here as each is actually run,
+  rather than let "it's working" quietly expand to cover everything.
+- **Phase B started — code/CI side only:**
+  - `app/build.gradle.kts`: added `signingConfigs { create("release") }`
+    reading four `RELEASE_*` environment variables; falls back to unsigned
+    when they're absent so debug/PR builds are unaffected.
+  - `.github/workflows/release.yml`: new tag-triggered (`v*`) workflow —
+    decodes `KEYSTORE_B64` secret to a runner-temp file, builds
+    `assembleRelease` + `bundleRelease`, computes SHA-256 checksums, deletes
+    the decoded keystore unconditionally (`if: always()`), attaches
+    APK+AAB+checksums to a GitHub Release.
+  - `RELEASE.md`: new file — the keystore generation + `gh secret set` steps,
+    written for the developer to run in Termux. **Deliberately not automated
+    by the agent** — the private key and password should never pass through
+    a chat transcript or an agent sandbox, only device → GitHub secrets
+    store directly.
+  - `PLAN.md` / `README.md`: updated to reflect the above and to distinguish
+    "installed on-device" (confirmed) from "fully smoke-tested" (not yet
+    itemized) and from "signed release exists" (not yet — no keystore/secrets
+    created yet).
+- **NOT yet done:** keystore generation, GitHub secrets (`KEYSTORE_B64`,
+  `KEYSTORE_PASS`, `KEY_ALIAS`, `KEY_PASS`), the `v1.0.0` tag push, the
+  release workflow's first run, `apksigner verify`, Gumroad/Play listings.
+
 ### 2026-07-08 — Repo structure corrected (re-sync)
 - Root cause of "no CI run" confirmed: the initial upload via GitHub web UI
   flattened the entire tree to the repo root (single commit, 20 files, no

@@ -16,6 +16,30 @@ android {
         versionName = "1.0"
     }
 
+    // Phase B: release signing.
+    //
+    // Deliberately env-var driven rather than reading a keystore.properties
+    // file, so the same build.gradle.kts works unmodified whether the four
+    // RELEASE_* variables come from a local shell (manual signing) or from
+    // GitHub Actions secrets (CI release build — see
+    // .github/workflows/release.yml). No secret material or path is
+    // hardcoded here or in any committed file.
+    //
+    // When RELEASE_KEYSTORE_PATH is absent (local debug work, PR builds),
+    // the release build type below falls back to unsigned, exactly as
+    // before — nothing breaks for anyone without the four variables set.
+    signingConfigs {
+        create("release") {
+            val path = System.getenv("RELEASE_KEYSTORE_PATH")
+            if (path != null) {
+                storeFile = file(path)
+                storePassword = System.getenv("RELEASE_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("RELEASE_KEY_ALIAS")
+                keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -23,8 +47,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // Signing is configured in Phase B (see PLAN.md). Until then,
-            // `assembleRelease` produces an unsigned artifact and CI builds debug.
+            val releaseSigning = signingConfigs.getByName("release")
+            if (releaseSigning.storeFile != null) {
+                signingConfig = releaseSigning
+            }
+            // If RELEASE_* env vars are unset, this produces an unsigned
+            // artifact (same as before Phase B) rather than failing the build.
         }
         debug {
             isMinifyEnabled = false
