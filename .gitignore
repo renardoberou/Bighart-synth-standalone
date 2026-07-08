@@ -1,0 +1,18 @@
+# Gradle / build
+.gradle/
+build/
+app/build/
+local.properties
+
+# Keystore & signing secrets — NEVER commit these (see PLAN.md Phase B)
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+
+# IDE
+.idea/
+*.iml
+.DS_Store
+
+# Note: gradle/wrapper/gradle-wrapper.jar IS committed on purpose so ./gradlew works.
