@@ -19,6 +19,25 @@ Live status log. **Append an entry whenever you finish a step.** Newest first.
 
 ## Log
 
+### 2026-07-09 — Signed v1.0.0 build tested on-device (developer-confirmed)
+- Developer installed and tested the signed `v1.0.0` release build (the one
+  from GitHub Release `v1.0.0`, not the earlier debug artifact) and reported:
+  "tested everything, it sounds/works great."
+- Recording this precisely as what it is — a developer-reported functional
+  test, not something independently verified by an agent (no device access
+  exists in this pipeline). Marked as such in PLAN.md/README.md rather than
+  stated as agent-verified fact.
+- With this, Phase B's engineering scope is complete: signing config, tag-
+  triggered release CI, the actual keystore/secrets, the `v1.0.0` signed
+  artifacts, and now a positive on-device test. Everything remaining
+  (Gumroad, Play Store internal testing) is distribution/store-listing work,
+  not code or CI.
+- Still outstanding, noted rather than silently dropped: an independent
+  `apksigner verify --verbose` pass on the release APK hasn't been run by
+  either the agent or confirmed by the developer as run — worth doing once
+  before any public link goes out, as a check that's orthogonal to "does it
+  sound good."
+
 ### 2026-07-08 (later) — CI verified green; Phase B signing scaffolding added
 - **CI verified, not just assumed:** pushed the corrected tree (commit
   `ad56913`) via a fine-grained PAT scoped to this repo only (Contents +

@@ -91,15 +91,17 @@ value-add available for this app.
       the keystore secret in-memory, runs `assembleRelease :bundleRelease`,
       checksums the outputs, deletes the decoded keystore unconditionally,
       attaches signed APK + AAB to a GitHub Release on any `v*` tag push.
-- [ ] **Keystore generation + GitHub secrets — see RELEASE.md.** This step is
-      deliberately left to the developer, run from Termux with `gh` CLI, so
-      the private key and password never pass through a chat transcript or
-      an agent's sandbox.
-- [ ] Cut `v1.0.0` tag once secrets exist → verify the Release workflow run.
-- [ ] `apksigner verify` + SHA-256 checksums on the produced artifacts.
-- [ ] On-device smoke test of the *signed* build specifically (a
-      debug-installed APK and a release-signed APK usually can't upgrade each
-      other in place — uninstall the debug build first if testing side by side).
+- [x] Keystore generated + GitHub secrets loaded (`KEYSTORE_B64`,
+      `KEYSTORE_PASS`, `KEY_ALIAS`, `KEY_PASS`) — done by the developer via
+      RELEASE.md, confirmed present via the GitHub API (names only).
+- [x] `v1.0.0` tag cut → Release workflow run `28981239727` succeeded →
+      `app-release.apk` (2,745,945 bytes), `app-release.aab` (2,504,776
+      bytes), `SHA256SUMS.txt` all confirmed present on the GitHub Release.
+- [x] **On-device smoke test of the signed build — developer-confirmed
+      ("tested everything, sounds/works great").** Covers audio, controls,
+      tape delay/reverb, and general playability on the signed `v1.0.0`
+      build. Not independently verified by the agent (no device access) —
+      recorded here as the developer's own test result.
 - [ ] Gumroad listing (mirror the Resonant Systems store; Bighart price point
       per existing pricing: Bighart $12).
 - [ ] Google Play: internal testing track first (not production), privacy
