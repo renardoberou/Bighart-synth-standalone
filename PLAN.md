@@ -104,9 +104,12 @@ value-add available for this app.
       recorded here as the developer's own test result.
 - [ ] Gumroad listing (mirror the Resonant Systems store; Bighart price point
       per existing pricing: Bighart $12).
-- [ ] Google Play: internal testing track first (not production), privacy
-      policy required before listing, note the 12-tester/14-day closed-test
-      gate if this is a new Play developer account.
+- [ ] Google Play — see **STORE_LISTING.md** for the full draft (listing copy,
+      Data Safety answers, confirmed requirements sourced from Google's own
+      docs). Summary: target API 35 already compliant; account requires the
+      12-tester/14-day closed test gate (confirmed applies to this account);
+      real on-device screenshots and the content rating questionnaire are the
+      two items only the developer can complete.
 
 ### Phase C — Optional native enhancements
 - [ ] **Native MIDI bridge** (the headline feature): use `android.media.midi`

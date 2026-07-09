@@ -19,6 +19,43 @@ Live status log. **Append an entry whenever you finish a step.** Newest first.
 
 ## Log
 
+### 2026-07-09 (later) — Play Store submission prep
+- Verified current requirements against Google's own docs (not third-party
+  blogs, several of which incorrectly imply an already-active API 36
+  requirement — that deadline is Aug 31, 2026 and doesn't block today):
+  target API 35 is the live requirement for new submissions, confirmed via
+  developer.android.com (updated 2026‑04‑22); this app already targets 35.
+- Confirmed via Play Console Help: the 12-tester/14-continuous-day closed
+  testing gate applies to personal accounts created after Nov 13, 2023.
+  Developer confirmed their account falls in this bucket — this is now the
+  long pole on the Play timeline, not anything code-side.
+- Generated Play Store visual assets from the existing waveform artwork
+  (same source as the launcher icon): `store/play/icon-512.png` (512×512
+  RGBA, full-bleed, not safe-zone-cropped like the adaptive launcher icon)
+  and `store/play/feature-graphic-1024x500.png`.
+- Drafted `STORE_LISTING.md`: store listing copy (title/short/full
+  description), Data Safety form answers (derived directly from the
+  manifest — no INTERNET permission, so "no data collected" is a
+  verifiable fact, not a guess), and an explicit split of what's ready vs.
+  what only the developer can do (screenshots, the 14-day tester recruitment,
+  the content rating questionnaire, Play Console account-level settings).
+- Also touched `renardoberou/portfolio-site` (separate repo, same PAT
+  happened to have access — verified via API before assuming, since the
+  token was originally requested scoped to this repo only):
+  - Added `privacy-policy.html`, matching the site's existing visual style,
+    covering all Resonant Systems apps generically with Bighart named as the
+    current example. Live at
+    https://renardoberou.github.io/portfolio-site/privacy-policy.html
+    (Pages already configured, serving from `main`/root — confirmed via API,
+    not assumed).
+  - Linked it from the homepage footer.
+  - Fixed a stale status line (all 3 languages) that still said "phone smoke
+    test pending" for Bighart Synth — no longer true since the signed
+    v1.0.0 on-device test. Updated to reflect the actual current state.
+- **NOT done, by design:** nothing was submitted to Play Console — there's
+  no API/connector access to it from this environment. This is a document
+  handoff, not a submission.
+
 ### 2026-07-09 — Signed v1.0.0 build tested on-device (developer-confirmed)
 - Developer installed and tested the signed `v1.0.0` release build (the one
   from GitHub Release `v1.0.0`, not the earlier debug artifact) and reported:
